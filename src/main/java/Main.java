@@ -1,6 +1,7 @@
 import org.example.model.entity.MemberEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
 public class Main {
@@ -16,18 +17,28 @@ public class Main {
         );
 
         Configuration configuration = new Configuration();
+        configuration.addAnnotatedClass(org.example.model.entity.MemberEntity.class);
         configuration.configure("hibernate.cfg.xml");
-        configuration.addAnnotatedClass(MemberEntity.class);
 
-        SessionFactory sessionFactory = configuration.buildSessionFactory();
-        Session session = sessionFactory.openSession();
+        SessionFactory factory = configuration.buildSessionFactory();
 
-        session.beginTransaction();   // REQUIRED
+        //add student
+        Session session = factory.openSession();
 
-        session.persist(memberEntity);  // INSERT
+        Transaction transaction = session.beginTransaction();
 
-        session.getTransaction().commit();   // REQUIRED
-        session.close();
-        sessionFactory.close();
+//       //save student
+//       session.persist(student);
+
+//        //search student
+//        System.out.println(session.find(Student.class,101));
+//
+//        //delete student
+//        session.remove(session.find(Student.class, 101));
+
+        //update student
+        session.merge(memberEntity);
+
+        transaction.commit();
     }
 }
